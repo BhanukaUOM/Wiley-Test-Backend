@@ -78,7 +78,7 @@ public class AuthController {
         ConfirmationToken confirmationToken = authService.createToken(user);
         emailSenderService.sendMail(user.getEmail(), confirmationToken.getConfirmationToken());
 
-        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/me").buildAndExpand(user.getId()).toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/user").buildAndExpand(user.getId()).toUri();
 
         return ResponseEntity.created(location).body(new ApiResponse(true, "Signup Successfully. Confirmation mail sent"));
     }
@@ -93,9 +93,15 @@ public class AuthController {
 
         User user = confirmationToken.getUser();
         Calendar calendar = Calendar.getInstance();
+
+        if (user.getEmailVerified()) {
+            throw new BadRequestException("Account Already Verified");
+        }
         
         if((confirmationToken.getExpiryDate().getTime() - calendar.getTime().getTime()) <= 0) {
-            throw new BadRequestException("Token expired");
+            ConfirmationToken newToken = authService.createToken(user);
+            emailSenderService.sendMail(user.getEmail(), newToken.getConfirmationToken());
+            return ResponseEntity.ok(new ApiResponse(true, "Token Expired. New confirmation mail sent. Please check Inbox"));
         }
 
         user.setEmailVerified(true);
