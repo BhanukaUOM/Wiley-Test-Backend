@@ -8,6 +8,7 @@ import com.sadheera.wileytest.payload.ApiResponse;
 import com.sadheera.wileytest.payload.AuthResponse;
 import com.sadheera.wileytest.payload.LoginRequest;
 import com.sadheera.wileytest.payload.SignUpRequest;
+import com.sadheera.wileytest.payload.UserResponse;
 import com.sadheera.wileytest.payload.ResetPasswordRequest;
 import com.sadheera.wileytest.payload.ResetPasswordVerifyRequest;
 import com.sadheera.wileytest.security.CustomUserDetailsService;
@@ -71,8 +72,9 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = tokenProvider.createToken(authentication);
+        UserResponse userData = new UserResponse(authService.findByEmail(loginRequest.getEmail()));
 
-        return ResponseEntity.ok(new AuthResponse(token, "Login Success"));
+        return ResponseEntity.ok(new AuthResponse(userData, token, "Login Success"));
 
     }
 

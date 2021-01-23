@@ -5,12 +5,14 @@ public class AuthResponse {
     private String message;
     private String accessToken;
     private String tokenType;
+    private UserResponse user;
 
-    public AuthResponse(String accessToken, String message) {
+    public AuthResponse(UserResponse user, String accessToken, String message) {
         this.success = true;
         this.message = message;
         this.accessToken = accessToken;
         this.tokenType = "Bearer";
+        this.user = user;
     }
 
     public String getAccessToken() {
@@ -43,5 +45,13 @@ public class AuthResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public UserResponse getUser() {
+        return user;
+    }
+
+    public void setUser(UserResponse user) {
+        this.user = user;
     }
 }
