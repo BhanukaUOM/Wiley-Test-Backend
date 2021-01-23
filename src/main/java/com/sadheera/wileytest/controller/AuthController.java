@@ -8,9 +8,12 @@ import com.sadheera.wileytest.payload.ApiResponse;
 import com.sadheera.wileytest.payload.AuthResponse;
 import com.sadheera.wileytest.payload.LoginRequest;
 import com.sadheera.wileytest.payload.SignUpRequest;
+import com.sadheera.wileytest.payload.ResetPasswordRequest;
+import com.sadheera.wileytest.payload.ResetPasswordVerifyRequest;
 import com.sadheera.wileytest.security.CustomUserDetailsService;
 import com.sadheera.wileytest.security.TokenProvider;
 import com.sadheera.wileytest.service.AuthService;
+import com.sadheera.wileytest.service.TempTokenGenerateService;
 import com.sadheera.wileytest.service.EmailSenderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +41,16 @@ public class AuthController {
     private AuthService authService;
 
     @Autowired
+    private TempTokenGenerateService tempTokenGenerateService;
+
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private EmailSenderService emailService;
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -107,5 +116,37 @@ public class AuthController {
         user.setEmailVerified(true);
         authService.save(user);
         return ResponseEntity.ok(new ApiResponse(true, "Email Verified Successfully!"));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest emailRequest) {
+        if(authService.existsByEmail(emailRequest.getEmail())) {
+            Integer token = tempTokenGenerateService.generateToken(emailRequest.getEmail());
+            if (token == -1)
+            {
+                throw new BadRequestException("Unable to Reset Password. Try Again");
+            }
+
+            if(emailService.sendSimpleMail(emailRequest.getEmail(), "Password Reset", Integer.toString(token))) {
+                return ResponseEntity.ok(new ApiResponse(true, "Password Reset Mail sent Successfully"));
+            }
+            throw new BadRequestException("Unable to Reset Password. Try Again");
+        } else {
+            throw new BadRequestException("Invalid Email.");
+        }
+    }
+
+    @PostMapping("/reset-password-verify")
+    public ResponseEntity<?> resetPasswordVerify(@Valid @RequestBody ResetPasswordVerifyRequest resetpasswordRequest) {
+        if(resetpasswordRequest.getToken() != null) {
+            Integer cacheToken = tempTokenGenerateService.getToken(resetpasswordRequest.getEmail());
+            if (cacheToken.equals(resetpasswordRequest.getToken()))
+            {
+                tempTokenGenerateService.clearToken(resetpasswordRequest.getEmail());
+                return ResponseEntity.ok(new ApiResponse(true, "Password Changed Successfully"));
+            }
+            tempTokenGenerateService.clearToken(resetpasswordRequest.getEmail());
+        }
+        throw new BadRequestException("Invalid Token");
     }
 }
