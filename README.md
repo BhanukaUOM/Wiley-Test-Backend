@@ -10,7 +10,7 @@
 [![Deploy Prod](https://img.shields.io/badge/deploy-success-brightgreen)](https://d277f7c9q80vkp.cloudfront.net)
 
 
-# Wiley Online Library - Coding Test
+# Wiley Online Library - Coding Test Backend
 
 Simple Login/Registration page for Wiley Online Library.
 
