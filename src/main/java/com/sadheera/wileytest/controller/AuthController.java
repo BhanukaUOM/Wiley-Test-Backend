@@ -87,7 +87,7 @@ public class AuthController {
 
         User user = authService.saveUser(signUpRequest);
         ConfirmationToken confirmationToken = authService.createToken(user);
-        emailSenderService.sendMail(user.getEmail(), confirmationToken.getConfirmationToken());
+        emailSenderService.sendConfirmationMail(user.getEmail(), confirmationToken.getConfirmationToken());
 
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/user").buildAndExpand(user.getId()).toUri();
 
@@ -111,7 +111,7 @@ public class AuthController {
         
         if((confirmationToken.getExpiryDate().getTime() - calendar.getTime().getTime()) <= 0) {
             ConfirmationToken newToken = authService.createToken(user);
-            emailSenderService.sendMail(user.getEmail(), newToken.getConfirmationToken());
+            emailSenderService.sendConfirmationMail(user.getEmail(), newToken.getConfirmationToken());
             return ResponseEntity.ok(new ApiResponse(true, "Token Expired. New confirmation mail sent. Please check Inbox"));
         }
 
@@ -129,7 +129,7 @@ public class AuthController {
                 throw new BadRequestException("Unable to Reset Password. Try Again");
             }
 
-            if(emailService.sendSimpleMail(emailRequest.getEmail(), "Password Reset", Integer.toString(token))) {
+            if(emailService.sendPasswordResetMail(emailRequest.getEmail(), Integer.toString(token))) {
                 return ResponseEntity.ok(new ApiResponse(true, "Password Reset Mail sent Successfully"));
             }
             throw new BadRequestException("Unable to Reset Password. Try Again");
