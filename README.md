@@ -19,6 +19,7 @@ Simple Login/Registration page for Wiley Online Library.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Deploy](#deploy)
+- [Choose of Technology](#technologies)
 
 <a name="installation"></a>
 
@@ -106,3 +107,12 @@ curl --location --request POST 'http://localhost:5000/auth/login' \
       $ eb deploy WileyTestBackend-env
       ```
    - Endpoint: `https://d277f7c9q80vkp.cloudfront.net`
+   
+   <a name="technologies"></a>
+
+   ## Choose of Technology
+   
+   - **Spring Boot** - In short, Spring Boot is the combination of Spring Framework and Embedded Servers.There is no requirement for XML configuration (deployment descriptor). It uses convention over configuration software design paradigm that means it decreases the effort of the developer in Spring Boot. We should use Spring Boot Framework because the dependency injection approach is used in Spring Boot, it contains powerful database transaction management capabilities, it simplifies integration with other Java frameworks like JPA/Hibernate ORM, Struts, etc and it reduces the cost and development time of the application. 
+    - **MySQL** - MySQL is currently the most popular database management system software used for managing the relational database. It is open-source database software, which is supported by Oracle Company. It is fast, scalable, and easy to use database management system in comparison with Microsoft SQL Server and Oracle Database. 
+    
+   
