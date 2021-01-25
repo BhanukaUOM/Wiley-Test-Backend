@@ -12,7 +12,7 @@
 
 # Wiley Online Library - Coding Test
 
-Simple Login Registration page for Wiley Online Library.
+Simple Login/Registration page for Wiley Online Library.
 
 ## Table of Contents
 
@@ -28,6 +28,23 @@ Simple Login Registration page for Wiley Online Library.
 
 - Java 8+
 - Maven 3.3+
+
+### Configure Spring Datasource & SMTP Server
+
+   - Configure in `src/main/resources/application.yml`
+
+   ```
+   spring:
+      datasource:
+         url: <db_connection_string>
+         username: <db_username>
+         password: <db_password>
+      mail:
+         host: <SMTP_host>
+         port: <SMTP_port>
+         username: <SMTP_username>
+         password: <SMTP_password>
+   ```
 
 ### Start App
 
@@ -73,16 +90,16 @@ curl --location --request POST 'http://localhost:5000/auth/login' \
 
 ## Deploy
 
-### Setup `aws-cli`
+#### Setup `aws-cli`
 
    - Refer: [Install AWS CLI](http://docs.aws.amazon.com/cli/latest/userguide/installing.html)
 
-### Setup `eb-cli`
+#### Setup `eb-cli`
 
    - Refer: [Install the EB CLI](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html)
 
 
-### Deploy
+#### Deploy
    - Deploy to EBS: 
       ```
       $ eb use WileyTestBackend-env
