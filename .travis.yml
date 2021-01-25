@@ -1,6 +1,13 @@
-sudo: required
 language: java
+sudo: required
+script: mvn clean verify
 
+jdk:
+  - openjdk11
+
+before_install:
+  - chmod +x mvnw
+  
 jobs:
   include:
     - stage: Master-Push
@@ -13,6 +20,7 @@ jobs:
         - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
         - export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
         - echo "CI/CD Starting for $BRANCH"
+        - python env_injection.py
         - mvn clean package spring-boot:repackage
         - eb deploy
       after_success:
@@ -22,6 +30,7 @@ jobs:
       if: branch = master AND type = pull_request
       script:
         - echo "CI/CD Starting for $BRANCH"
+        - python env_injection.py
         - mvn clean package spring-boot:repackage
       after_success:
         - echo "CI Successfully"
@@ -30,6 +39,7 @@ jobs:
       if: branch = dev AND type = push
       script:
         - echo "CI/CD Starting for $BRANCH"
+        - python env_injection.py
         - mvn clean package spring-boot:repackage
       after_success:
         - echo "CI Successfully"
