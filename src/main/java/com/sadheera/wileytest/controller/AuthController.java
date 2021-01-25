@@ -145,7 +145,11 @@ public class AuthController {
             if (cacheToken.equals(resetpasswordRequest.getToken()))
             {
                 tempTokenGenerateService.clearToken(resetpasswordRequest.getEmail());
-                return ResponseEntity.ok(new ApiResponse(true, "Password Changed Successfully"));
+                if(authService.changePassword(resetpasswordRequest.getEmail(), resetpasswordRequest.getPassword())) {
+                    return ResponseEntity.ok(new ApiResponse(true, "Password changed successfully"));
+                } else {
+                    throw new BadRequestException("Unable to change password. Try again!");
+                }
             }
             tempTokenGenerateService.clearToken(resetpasswordRequest.getEmail());
         }
