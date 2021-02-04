@@ -106,8 +106,7 @@ curl --location --request POST 'http://localhost:5000/auth/login' \
       $ eb use WileyTestBackend-env
       $ eb deploy WileyTestBackend-env
       ```
-   - Endpoint: `https://d277f7c9q80vkp.cloudfront.net`
-   
+    
    <a name="technologies"></a>
 
    ## Choose of Technology
